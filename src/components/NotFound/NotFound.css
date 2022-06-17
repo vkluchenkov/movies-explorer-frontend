@@ -8,7 +8,7 @@
   position: relative;
 }
 
-.not-found_title {
+.not-found__title {
   font-weight: 400;
   font-size: 80px;
   line-height: 97px;
@@ -17,7 +17,7 @@
   color: white;
 }
 
-.not-found_subtitle {
+.not-found__subtitle {
   font-weight: 400;
   font-size: 12px;
   line-height: 15px;
@@ -25,7 +25,7 @@
   color: white;
 }
 
-.not-found_link {
+.not-found__link {
   font-weight: 400;
   font-size: 12px;
   line-height: 15px;
@@ -36,24 +36,24 @@
   bottom: 30px;
 }
 
-.not-found_link:hover {
+.not-found__link:hover {
   opacity: 0.7;
 }
 
 @media screen and (min-width: 768px) {
-  .not-found_title {
+  .not-found__title {
     font-size: 140px;
     line-height: 169px;
     margin: 184px 0 0;
   }
 
-  .not-found_subtitle {
+  .not-found__subtitle {
     font-size: 16px;
     line-height: 19px;
     margin: 5px 0 0;
   }
 
-  .not-found_link {
+  .not-found__link {
     font-size: 14px;
     line-height: 17px;
     position: relative;

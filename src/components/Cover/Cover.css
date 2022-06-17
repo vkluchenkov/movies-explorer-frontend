@@ -1,0 +1,47 @@
+.cover {
+  height: calc(100vh - 140px);
+  min-height: 350px;
+  background-image: url('../../images/landing-cover.svg');
+  background-size: calc(100% - 72px);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #073042;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 14px;
+}
+
+.cover__title {
+  max-width: 730px;
+  font-weight: 400;
+  font-size: 31px;
+  line-height: 39px;
+  letter-spacing: -0.04em;
+  text-align: center;
+  color: white;
+  margin: 35px auto;
+}
+
+@media screen and (min-width: 392px) {
+  .cover {
+    background-size: 320px 320px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .cover {
+    max-height: 784px;
+  }
+
+  .cover__title {
+    font-size: 50px;
+    line-height: 58px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .cover {
+    max-height: 524px;
+  }
+}

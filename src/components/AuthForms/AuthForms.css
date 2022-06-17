@@ -1,0 +1,143 @@
+.auth {
+  width: 100%;
+  max-width: 396px;
+  min-height: 100vh;
+  padding: 56px 30px 30px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.auth__title {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 29px;
+  color: white;
+  margin: 0 0 80px;
+}
+
+.auth__logo {
+  width: 38px;
+  height: 38px;
+  margin-bottom: 50px;
+}
+
+.auth__actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: flex-end;
+  margin: auto 0 0;
+}
+
+.auth__actions_hint {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  color: #8b8b8b;
+  margin: 14px 0 0;
+}
+
+.auth__actions_link {
+  color: #4285f4;
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+
+.auth__actions_link:hover {
+  opacity: 0.7;
+}
+
+.auth__actions_button {
+  background-color: #4285f4;
+  padding: 15px 0;
+  width: 100%;
+  border-radius: 3px;
+  outline: none;
+  border: 0;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  color: white;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.auth__actions_button:hover {
+  background-color: #4286f4c0;
+}
+
+.auth__actions_button:disabled {
+  background-color: #494949;
+  cursor: not-allowed;
+  color: grey;
+}
+
+@media screen and (min-width: 768px) {
+  .auth {
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .auth__logo {
+    margin-bottom: 40px;
+  }
+
+  .auth__actions {
+    margin: 220px 0 0;
+  }
+
+  .auth__actions_hint {
+    font-size: 14px;
+    line-height: 17px;
+    margin: 16px 0 0;
+  }
+
+  .auth__actions_button {
+    font-size: 14px;
+    line-height: 17px;
+  }
+}
+
+.authform {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+
+.authform__label {
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  color: #8b8b8b;
+}
+
+.authform__input {
+  background: none;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  height: 20px;
+  color: #ffffff;
+  border: 0;
+  border-bottom: 1px solid #424242;
+  padding: 0 0 10px 0;
+  outline: none;
+  margin: 0 0 15px;
+}
+
+.authform__input:invalid {
+  color: #ee3465;
+}
+
+.authform__error {
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  color: #ee3465;
+  margin: -10px 0 15px;
+}
