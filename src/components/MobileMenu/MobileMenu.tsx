@@ -10,13 +10,13 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => (
         <Link to='/'>Главная</Link>
       </li>
       <li className='mobile-menu__item mobile-menu__item_active'>
-        <Link to='/'>Фильмы</Link>
+        <Link to='/movies'>Фильмы</Link>
       </li>
       <li className='mobile-menu__item'>
-        <Link to='/'>Сохраненные фильмы</Link>
+        <Link to='/saved-movies'>Сохраненные фильмы</Link>
       </li>
       <li className='mobile-menu__item mobile-menu__item_account'>
-        <Link to='/'>Аккаунт</Link>
+        <Link to='/profile'>Аккаунт</Link>
       </li>
     </ul>
     <CloseButton className='mobile-menu__close' onClick={onClose} />

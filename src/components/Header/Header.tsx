@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { MobileMenu } from '../MobileMenu/MobileMenu';
 import { HeaderProps } from './Header.types';
+import { Menu } from '../Menu/Menu';
 
 export const Header: React.FC<HeaderProps> = ({ isLanding }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,9 +27,14 @@ export const Header: React.FC<HeaderProps> = ({ isLanding }) => {
   return (
     <>
       <header className={isLanding ? 'header header_landing' : 'header'}>
-        <Logo className='header__logo' />
+        <Link to='/'>
+          <Logo className='header__logo' />
+        </Link>
         {currentUser?.isLoggedIn ? (
-          <MenuButton className='header__mobile-menu' onClick={menuOpen} />
+          <>
+            <MenuButton className='header__mobile-menu' onClick={menuOpen} />
+            <Menu />
+          </>
         ) : (
           <div className='header__actions'>
             <Link to='signup' className='header__signup-link'>
