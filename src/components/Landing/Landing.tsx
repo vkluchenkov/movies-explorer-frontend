@@ -5,6 +5,7 @@ import { Navbar } from '../Navbar/Navbar';
 import { About } from '../About/About';
 import { Tech } from '../Tech/Tech';
 import { Student } from '../Student/Student';
+import { Footer } from '../Footer/Footer';
 
 export const Landing: React.FC = () => (
   <>
@@ -16,5 +17,6 @@ export const Landing: React.FC = () => (
       <Tech />
       <Student />
     </main>
+    <Footer />
   </>
 );
