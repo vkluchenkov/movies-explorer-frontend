@@ -7,3 +7,8 @@ export interface SignupPayload {
   email: string;
   password: string;
 }
+
+export interface UpdatePayload {
+  name: string;
+  email: string;
+}

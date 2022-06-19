@@ -1,12 +1,8 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ReactComponent as Logo } from '../../../images/logo.svg';
-import { LoginPayload } from '../../../types/payloads';
 import '../AuthForms.css';
-
-interface LoginProps {
-  onLogin: (payload: LoginPayload) => void;
-}
+import { LoginProps } from './Login.types';
 
 export const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [email, setEmail] = useState('');
