@@ -1,4 +1,4 @@
-interface FilmImageFormat {
+interface MovieImageFormat {
   hash: string;
   ext: string;
   mime: string;
@@ -9,21 +9,21 @@ interface FilmImageFormat {
   url: string;
 }
 
-interface FilmImageFormats {
-  thumbnail?: FilmImageFormat;
-  large?: FilmImageFormat;
-  medium?: FilmImageFormat;
-  small?: FilmImageFormat;
+interface MovieImageFormats {
+  thumbnail: MovieImageFormat;
+  large?: MovieImageFormat;
+  medium?: MovieImageFormat;
+  small?: MovieImageFormat;
 }
 
-interface FilmImage {
+interface MovieImage {
   id: number;
   name: string;
   alternativeText: string;
   caption: string;
   width: number;
   height: number;
-  formats: FilmImageFormats;
+  formats: MovieImageFormats;
   hash: string;
   ext: string;
   mime: string;
@@ -36,7 +36,7 @@ interface FilmImage {
   updated_at: string;
 }
 
-export interface Film {
+export interface Movie {
   id: number;
   nameRU: string;
   nameEN: string | null;
@@ -48,5 +48,5 @@ export interface Film {
   trailerLink: string | null;
   created_at: string;
   updated_at: string;
-  image: FilmImage;
+  image: MovieImage;
 }

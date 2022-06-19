@@ -1,6 +1,6 @@
-import { Film } from '../types/Film';
+import { Movie } from '../types/Movie';
 
-export const Films: Film[] = [
+export const movies: Movie[] = [
   {
     id: 1,
     nameRU: '«Роллинг Стоунз» в изгнании',
