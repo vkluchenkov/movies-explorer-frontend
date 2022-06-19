@@ -4,6 +4,7 @@ import './App.css';
 import { Login } from './components/AuthForms/Login/Login';
 import { Signup } from './components/AuthForms/Signup/Signup';
 import { Landing } from './components/Landing/Landing';
+import { Movies } from './components/Movies/Movies';
 import { NotFound } from './components/NotFound/NotFound';
 import { CurrentUserContext } from './contexts/CurrentUserContext';
 import { CurrentUser } from './types/CurrentUser';
@@ -37,6 +38,7 @@ function App() {
           <Route path='/' element={<Landing />} />
           <Route path='/signin' element={<Login onLogin={handleLogin} />} />
           <Route path='/signup' element={<Signup onSignup={handleSignup} />} />
+          <Route path='/movies' element={<Movies />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
       </BrowserRouter>
