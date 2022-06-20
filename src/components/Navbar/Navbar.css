@@ -1,0 +1,37 @@
+.nav {
+  background-color: #272727;
+}
+
+.navlinks {
+  min-height: 66px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  list-style-type: none;
+}
+
+.navlink a {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 16px;
+  text-decoration-line: underline;
+  color: white;
+  transition: opacity 0.3s;
+}
+
+.navlink a:hover {
+  opacity: 0.7;
+}
+
+@media screen and (min-width: 768px) {
+  .navlinks {
+    gap: 40px;
+  }
+
+  .navlink a {
+    font-size: 13px;
+  }
+}
