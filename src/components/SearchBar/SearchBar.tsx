@@ -1,12 +1,20 @@
 import { FormEvent, useState } from 'react';
 import './SearchBar.css';
 
-export const SearchBar: React.FC = () => {
+interface SearchBarProps {
+  onFilter: (isFilter: boolean) => void;
+  onSearch: (keyword: string) => void;
+}
+
+export const SearchBar: React.FC<SearchBarProps> = ({ onFilter, onSearch }) => {
   const [inputValue, setInputValue] = useState('');
   const [isFilter, setIsFilter] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
-  const formSubmitHandler = () => {};
+  const formSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSearch(inputValue);
+  };
 
   const handleInput = (e: FormEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
@@ -15,7 +23,10 @@ export const SearchBar: React.FC = () => {
     else setIsButtonDisabled(true);
   };
 
-  const handleSwitch = () => setIsFilter(!isFilter);
+  const handleSwitch = () => {
+    setIsFilter(!isFilter);
+    onFilter(!isFilter);
+  };
 
   return (
     <section className='search'>

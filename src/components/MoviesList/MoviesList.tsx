@@ -3,7 +3,7 @@ import { MovieListProps } from './MoviesList.types';
 import './MoviesList.css';
 import { useEffect, useState } from 'react';
 
-export const MoviesList: React.FC<MovieListProps> = ({ movies, isSavedView }) => {
+export const MoviesList: React.FC<MovieListProps> = ({ movies, isSavedView, keyword }) => {
   const [qty, setQty] = useState(5);
   const [moreQty, setMoreQty] = useState(2);
 
@@ -13,17 +13,11 @@ export const MoviesList: React.FC<MovieListProps> = ({ movies, isSavedView }) =>
       setMoreQty(2);
     }
     if (window.innerWidth >= 600 && window.innerWidth < 1024) {
-      setQty((current) => {
-        if (current <= 8) return 8;
-        return Math.floor(current / 2) * 2;
-      });
+      setQty((current) => (current <= 8 ? 8 : Math.floor(current / 2) * 2));
       setMoreQty(4);
     }
     if (window.innerWidth >= 1024) {
-      setQty((current) => {
-        if (current <= 12) return 12;
-        return Math.floor(current / 3) * 3;
-      });
+      setQty((current) => (current <= 12 ? 12 : Math.floor(current / 3) * 3));
       setMoreQty(6);
     }
   };
@@ -32,36 +26,27 @@ export const MoviesList: React.FC<MovieListProps> = ({ movies, isSavedView }) =>
 
   useEffect(() => {
     handleResize();
-  }, []);
-
-  useEffect(() => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const moviesMap = movies.map((movie, index) => {
-    if (!isSavedView && movies.length < qty) {
-      return <MovieCard movie={movie} key={movie.id} isSavedView={isSavedView} />;
-    } else if (!isSavedView)
-      return index < qty ? (
-        <MovieCard movie={movie} key={movie.id} isSavedView={isSavedView} />
-      ) : null;
-    else return <MovieCard movie={movie} key={movie.id} isSavedView={isSavedView} />;
+  const renderMovies = movies.map((movie, index) => {
+    const card = <MovieCard movie={movie} key={movie.id} isSavedView={isSavedView} />;
+    if (!isSavedView) return index < qty ? card : null;
+    return card;
   });
 
-  const message = <p className='movie-list__message'>Кина не будет. Электричество кончилось...</p>;
+  const message = (
+    <p className='movie-list__message'>
+      По запросу « <strong>{keyword}</strong> » ничего не найдено :(
+    </p>
+  );
 
   return (
     <section className='movie-list'>
-      {movies.length ? <ul className='movie-list__cards'>{moviesMap}</ul> : message}
-      {isSavedView ? (
-        <></>
-      ) : (
-        <button
-          type='button'
-          className={movies.length <= qty ? 'movie-list__more-btn_hidden' : 'movie-list__more-btn'}
-          onClick={handleMore}
-        >
+      {movies.length ? <ul className='movie-list__cards'>{renderMovies}</ul> : message}
+      {movies.length <= qty || isSavedView ? null : (
+        <button type='button' className='movie-list__more-btn' onClick={handleMore}>
           Ещё
         </button>
       )}
