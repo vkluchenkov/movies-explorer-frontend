@@ -30,7 +30,7 @@ function App() {
         name: 'Василий',
       }));
       console.log(payload);
-      navigate('/');
+      navigate('/movies');
     },
     [navigate]
   );
@@ -44,7 +44,7 @@ function App() {
         name: 'Василий',
       }));
       console.log(payload);
-      navigate('/');
+      navigate('/movies');
     },
     [navigate]
   );
