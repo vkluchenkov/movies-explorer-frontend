@@ -32,12 +32,13 @@ export const MoviesList: React.FC<MovieListProps> = ({ movies, isSavedView }) =>
   }, []);
 
   const moviesMap = movies.map((movie, index) => {
-    if (movies.length < initialQty) {
+    if (!isSavedView && movies.length < initialQty) {
       return <MovieCard movie={movie} key={movie.id} isSavedView={isSavedView} />;
-    }
-    return index < initialQty ? (
-      <MovieCard movie={movie} key={movie.id} isSavedView={isSavedView} />
-    ) : null;
+    } else if (!isSavedView)
+      return index < initialQty ? (
+        <MovieCard movie={movie} key={movie.id} isSavedView={isSavedView} />
+      ) : null;
+    else return <MovieCard movie={movie} key={movie.id} isSavedView={isSavedView} />;
   });
 
   const message = <p className='movie-list__message'>Кина не будет. Электричество кончилось...</p>;
@@ -45,9 +46,13 @@ export const MoviesList: React.FC<MovieListProps> = ({ movies, isSavedView }) =>
   return (
     <section className='movie-list'>
       {movies.length ? <ul className='movie-list__cards'>{moviesMap}</ul> : message}
-      <button type='button' className='movie-list__more-btn'>
-        Ещё
-      </button>
+      {isSavedView ? (
+        <></>
+      ) : (
+        <button type='button' className='movie-list__more-btn'>
+          Ещё
+        </button>
+      )}
     </section>
   );
 };

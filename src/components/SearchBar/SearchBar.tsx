@@ -4,12 +4,15 @@ import './SearchBar.css';
 export const SearchBar: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [isFilter, setIsFilter] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const formSubmitHandler = () => {};
 
   const handleInput = (e: FormEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     setInputValue(target.value);
+    if (target.checkValidity()) setIsButtonDisabled(false);
+    else setIsButtonDisabled(true);
   };
 
   const handleSwitch = () => setIsFilter(!isFilter);
@@ -24,8 +27,9 @@ export const SearchBar: React.FC = () => {
           value={inputValue}
           onChange={handleInput}
           placeholder='Фильм'
+          required
         />
-        <button type='submit' className='search__button'>
+        <button type='submit' className='search__button' disabled={isButtonDisabled}>
           Найти
         </button>
       </form>
