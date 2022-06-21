@@ -1,4 +1,4 @@
-import { MovieDto } from '../types/Movie';
+import { Movie, MovieDto } from '../types/Movie';
 import { LoginPayload, MoviePayload, SignupPayload, UpdateMePayload } from '../types/payloads';
 import { User } from '../types/User';
 
@@ -16,6 +16,26 @@ class MainApi {
     this._headers = options.headers;
     this._resHandler = (res) => (res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`));
   }
+
+  _dtoToMovie = async (dto: Promise<MovieDto[]>): Promise<Movie[]> => {
+    const res = await dto;
+    return res.map((m) => {
+      return {
+        id: m.movieId,
+        nameRU: m.nameRU,
+        nameEN: m.nameEN,
+        director: m.director,
+        country: m.country,
+        year: m.year,
+        duration: m.duration,
+        description: m.description,
+        trailerLink: m.trailerLink,
+        image: {
+          url: m.image,
+        },
+      };
+    });
+  };
 
   getMe = async (): Promise<User> => {
     const res = await fetch(`${this._baseUrl}/users/me`, {
@@ -63,12 +83,13 @@ class MainApi {
     return this._resHandler(res);
   };
 
-  getMovies = async (): Promise<MovieDto[]> => {
+  getMovies = async (): Promise<Movie[]> => {
     const res = await fetch(`${this._baseUrl}/movies`, {
       headers: this._headers,
       credentials: 'include',
     });
-    return this._resHandler(res);
+    const data: Promise<MovieDto[]> | null = res.ok ? res.json() : null;
+    return data ? this._dtoToMovie(data) : Promise.reject(`Ошибка: ${res.status}`);
   };
 
   addMovie = async (payload: MoviePayload): Promise<MovieDto> => {

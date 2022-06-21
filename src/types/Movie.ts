@@ -10,30 +10,30 @@ interface MovieImageFormat {
 }
 
 interface MovieImageFormats {
-  thumbnail: MovieImageFormat;
+  thumbnail?: MovieImageFormat;
   large?: MovieImageFormat;
   medium?: MovieImageFormat;
   small?: MovieImageFormat;
 }
 
 interface MovieImage {
-  id: number;
-  name: string;
-  alternativeText: string;
-  caption: string;
-  width: number;
-  height: number;
-  formats: MovieImageFormats;
-  hash: string;
-  ext: string;
-  mime: string;
-  size: number;
+  id?: number;
+  name?: string;
+  alternativeText?: string;
+  caption?: string;
+  width?: number;
+  height?: number;
+  formats?: MovieImageFormats;
+  hash?: string;
+  ext?: string;
+  mime?: string;
+  size?: number;
   url: string;
-  previewUrl: string | null;
-  provider: string;
-  provider_metadata: null;
-  created_at: string;
-  updated_at: string;
+  previewUrl?: string | null;
+  provider?: string;
+  provider_metadata?: null;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Movie {
@@ -46,8 +46,8 @@ export interface Movie {
   duration: number;
   description: string;
   trailerLink: string | null;
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
   image: MovieImage;
 }
 export interface MovieDto {
@@ -56,7 +56,7 @@ export interface MovieDto {
   nameEN: string;
   director: string;
   country: string;
-  year: number;
+  year: string;
   duration: number;
   description: string;
   trailerLink: string;

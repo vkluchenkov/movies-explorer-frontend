@@ -1,10 +1,13 @@
-import { FormEvent, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { FormEvent, useContext, useEffect, useState } from 'react';
+import { Link, Navigate } from 'react-router-dom';
+import { CurrentUserContext } from '../../../contexts/CurrentUserContext';
 import { ReactComponent as Logo } from '../../../images/logo.svg';
 import '../AuthForms.css';
 import { LoginProps } from './Login.types';
 
 export const Login: React.FC<LoginProps> = ({ onLogin }) => {
+  const currentUser = useContext(CurrentUserContext);
+
   const [email, setEmail] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [emailValidationMsg, setEmailValidationMsg] = useState('');
@@ -36,7 +39,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
     e.preventDefault();
     onLogin({ email, password });
   };
-
+  if (currentUser.isLoggedIn) return <Navigate to='/' />;
   return (
     <section className='auth'>
       <Link to='/' className='auth__logo'>

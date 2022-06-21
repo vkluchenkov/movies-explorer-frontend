@@ -6,6 +6,11 @@
   box-sizing: border-box;
 }
 
+.movies__preloader-container {
+  max-width: 250px;
+  padding: 50px 0 0;
+}
+
 @media screen and (min-width: 768px) {
   .movies {
     padding: 0 30px;

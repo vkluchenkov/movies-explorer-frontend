@@ -7,6 +7,7 @@ import { GuardedRoute } from './components/GuardedRoute/GuardedRoute';
 import { Landing } from './components/Landing/Landing';
 import { Movies } from './components/Movies/Movies';
 import { NotFound } from './components/NotFound/NotFound';
+import Preloader from './components/Preloader/Preloader';
 import { Profile } from './components/Profile/Profile';
 import { CurrentUserContext } from './contexts/CurrentUserContext';
 import { CurrentUser } from './types/CurrentUser';
@@ -15,6 +16,7 @@ import { mainApi } from './utils/MainApi';
 
 function App() {
   const navigate = useNavigate();
+  const [authchecked, setAuthChecked] = useState(false);
 
   // States
   const [currentUser, setCurrentUser] = useState<CurrentUser>({
@@ -29,11 +31,14 @@ function App() {
       try {
         const res = await mainApi.getMe();
         if (res) setCurrentUser({ ...res, isLoggedIn: true });
-      } catch (error: any) {
-        console.log(error);
-      }
+      } catch (error: any) {}
     };
-    fetchMe();
+    const fetch = async () => {
+      await fetchMe();
+      setAuthChecked(true);
+    };
+
+    fetch();
   }, []);
 
   // Handlers
@@ -84,12 +89,19 @@ function App() {
       const res = await mainApi.signout();
       if (res) setCurrentUser({ isLoggedIn: false, email: '', name: '' });
       localStorage.removeItem('keyword');
+      localStorage.removeItem('filter');
       navigate('/');
     } catch (error) {
       console.log(error);
     }
   }, [navigate]);
 
+  if (!authchecked)
+    return (
+      <section className='app__preloader'>
+        <Preloader />
+      </section>
+    );
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <Routes>

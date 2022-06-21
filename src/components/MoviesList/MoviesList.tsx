@@ -38,7 +38,9 @@ export const MoviesList: React.FC<MovieListProps> = ({ movies, isSavedView, keyw
 
   const message = (
     <p className='movie-list__message'>
-      По запросу « <strong>{keyword}</strong> » ничего не найдено :(
+      {movies.length
+        ? 'По запросу « <strong>{keyword}</strong> » ничего не найдено :('
+        : 'Фильмы отсутствуют'}
     </p>
   );
 

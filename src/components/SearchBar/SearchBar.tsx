@@ -1,16 +1,17 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import './SearchBar.css';
 
 interface SearchBarProps {
-  onFilter: (isFilter: boolean) => void;
+  onFilter: () => void;
   onSearch: (keyword: string) => void;
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({ onFilter, onSearch }) => {
   const localStorage = window.localStorage;
+  const currentFilter = JSON.parse(localStorage.filter);
 
   const [inputValue, setInputValue] = useState(localStorage.keyword ? localStorage.keyword : '');
-  const [isFilter, setIsFilter] = useState(localStorage.filter ? localStorage.filter : false);
+  const [isFilter, setIsFilter] = useState(currentFilter);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const formSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
@@ -26,9 +27,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onFilter, onSearch }) => {
   };
 
   const handleSwitch = () => {
-    setIsFilter(!isFilter);
     localStorage.setItem('filter', JSON.stringify(!isFilter));
-    onFilter(!isFilter);
+    setIsFilter(!isFilter);
+    onFilter();
   };
 
   return (

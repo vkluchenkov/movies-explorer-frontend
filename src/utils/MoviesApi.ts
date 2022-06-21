@@ -11,7 +11,7 @@ class MoviesApi {
     this._resHandler = (res) => (res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`));
   }
   getMovies = async (): Promise<Movie[]> => {
-    const res = await fetch(`${this._baseUrl}/movies`, {
+    const res = await fetch(`${this._baseUrl}`, {
       headers: this._headers,
     });
     return this._resHandler(res);
