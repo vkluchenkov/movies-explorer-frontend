@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import './SearchBar.css';
 
 interface SearchBarProps {
@@ -7,8 +7,10 @@ interface SearchBarProps {
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({ onFilter, onSearch }) => {
-  const [inputValue, setInputValue] = useState('');
-  const [isFilter, setIsFilter] = useState(false);
+  const localStorage = window.localStorage;
+
+  const [inputValue, setInputValue] = useState(localStorage.keyword ? localStorage.keyword : '');
+  const [isFilter, setIsFilter] = useState(localStorage.filter ? localStorage.filter : false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const formSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
@@ -25,6 +27,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onFilter, onSearch }) => {
 
   const handleSwitch = () => {
     setIsFilter(!isFilter);
+    localStorage.setItem('filter', JSON.stringify(!isFilter));
     onFilter(!isFilter);
   };
 
@@ -38,7 +41,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onFilter, onSearch }) => {
           value={inputValue}
           onChange={handleInput}
           placeholder='Фильм'
-          required
         />
         <button type='submit' className='search__button' disabled={isButtonDisabled}>
           Найти

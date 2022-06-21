@@ -50,3 +50,17 @@ export interface Movie {
   updated_at: string;
   image: MovieImage;
 }
+export interface MovieDto {
+  movieId: number;
+  nameRU: string;
+  nameEN: string;
+  director: string;
+  country: string;
+  year: number;
+  duration: number;
+  description: string;
+  trailerLink: string;
+  image: string;
+  thumbnail: string;
+  owner: string;
+}

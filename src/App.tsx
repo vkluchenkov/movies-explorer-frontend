@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import './App.css';
 import { Login } from './components/AuthForms/Login/Login';
@@ -10,61 +10,85 @@ import { NotFound } from './components/NotFound/NotFound';
 import { Profile } from './components/Profile/Profile';
 import { CurrentUserContext } from './contexts/CurrentUserContext';
 import { CurrentUser } from './types/CurrentUser';
-import { LoginPayload, SignupPayload, UpdatePayload } from './types/payloads';
+import { LoginPayload, SignupPayload, UpdateMePayload } from './types/payloads';
+import { mainApi } from './utils/MainApi';
 
 function App() {
   const navigate = useNavigate();
 
+  // States
   const [currentUser, setCurrentUser] = useState<CurrentUser>({
     isLoggedIn: false,
     name: '',
     email: '',
   });
 
+  // Check if returning visitor is logged in
+  useEffect(() => {
+    const fetchMe = async () => {
+      try {
+        const res = await mainApi.getMe();
+        if (res) setCurrentUser({ ...res, isLoggedIn: true });
+      } catch (error: any) {
+        console.log(error);
+      }
+    };
+    fetchMe();
+  }, []);
+
+  // Handlers
   const handleLogin = useCallback(
-    (payload: LoginPayload) => {
-      setCurrentUser((prev) => ({
-        ...prev,
-        isLoggedIn: true,
-        email: payload.email,
-        name: 'Василий',
-      }));
-      console.log(payload);
-      navigate('/movies');
+    async (payload: LoginPayload) => {
+      try {
+        const res = await mainApi.signin(payload);
+        if (res) {
+          setCurrentUser({ ...res, isLoggedIn: true });
+          navigate('/movies');
+        }
+      } catch (error: any) {
+        console.log(error);
+      }
     },
     [navigate]
   );
 
   const handleSignup = useCallback(
-    (payload: SignupPayload) => {
-      setCurrentUser((prev) => ({
-        ...prev,
-        isLoggedIn: true,
-        email: payload.email,
-        name: 'Василий',
-      }));
-      console.log(payload);
-      navigate('/movies');
+    async (payload: SignupPayload) => {
+      try {
+        const res = await mainApi.signup(payload);
+        if (res) {
+          setCurrentUser({ ...res, isLoggedIn: true });
+          navigate('/movies');
+        }
+      } catch (error: any) {
+        console.log(error);
+      }
     },
     [navigate]
   );
 
-  const handleUpdate = useCallback((payload: UpdatePayload) => {
-    setCurrentUser((prev) => ({
-      ...prev,
-      email: payload.email,
-      name: payload.name,
-    }));
-    console.log(payload);
+  const handleUpdateMe = useCallback(async (payload: UpdateMePayload) => {
+    try {
+      const res = await mainApi.patchMe(payload);
+      if (res) {
+        setCurrentUser((prev) => ({ ...prev, ...res }));
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
   }, []);
 
-  const handleLogout = useCallback(() => {
-    setCurrentUser({
-      isLoggedIn: false,
-      email: '',
-      name: '',
-    });
-  }, []);
+  const handleLogout = useCallback(async () => {
+    const localStorage = window.localStorage;
+    try {
+      const res = await mainApi.signout();
+      if (res) setCurrentUser({ isLoggedIn: false, email: '', name: '' });
+      localStorage.removeItem('keyword');
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+    }
+  }, [navigate]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -92,7 +116,7 @@ function App() {
           path='/profile'
           element={
             <GuardedRoute>
-              <Profile onLogout={handleLogout} onSubmit={handleUpdate} />
+              <Profile onLogout={handleLogout} onSubmit={handleUpdateMe} />
             </GuardedRoute>
           }
         />

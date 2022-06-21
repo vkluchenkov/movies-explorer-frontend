@@ -8,7 +8,11 @@ import { MoviesProps } from './Movies.types';
 import './Movies.css';
 
 export const Movies: React.FC<MoviesProps> = ({ isSavedView }) => {
-  const [currentKeyword, setCurrentKeyword] = useState('');
+  const localStorage = window.localStorage;
+
+  const [currentKeyword, setCurrentKeyword] = useState(
+    localStorage.keyword ? localStorage.keyword : ''
+  );
   const [renderMovies, setRenderMovies] = useState(movies);
 
   const searchResult = useMemo(
@@ -28,12 +32,11 @@ export const Movies: React.FC<MoviesProps> = ({ isSavedView }) => {
     },
     [searchResult]
   );
-
   const searchHandler = useCallback((keyword: string) => setCurrentKeyword(keyword), []);
 
-  useEffect(() => {
-    setRenderMovies(searchResult);
-  }, [searchResult]);
+  useEffect(() => setRenderMovies(searchResult), [searchResult]);
+  useEffect(() => localStorage.setItem('keyword', currentKeyword), [currentKeyword, localStorage]);
+  useEffect(() => filterHandler(localStorage.filter), [localStorage, filterHandler]);
 
   return (
     <>

@@ -5,7 +5,9 @@ import { FormEvent, useContext, useEffect, useState } from 'react';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
 export const Profile: React.FC<ProfileProps> = ({ onSubmit, onLogout }) => {
+  // States
   const currentUser = useContext(CurrentUserContext);
+
   const [email, setEmail] = useState(currentUser.email);
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [emailValidationMsg, setEmailValidationMsg] = useState('');
@@ -18,14 +20,15 @@ export const Profile: React.FC<ProfileProps> = ({ onSubmit, onLogout }) => {
 
   const [isButtonHidden, setIsButtonHidden] = useState(true);
 
+  // Effects
   useEffect(() => {
     if (isFormValid) setIsButtonHidden(false);
     else setIsButtonHidden(true);
   }, [isFormValid]);
 
+  // Handlers
   const handleInputChange = (e: FormEvent<HTMLInputElement>) => {
     const form: HTMLFormElement | null = document.querySelector('.form');
-
     if (form) setIsFormValid(form.reportValidity());
 
     const target = e.target as HTMLInputElement;
@@ -44,6 +47,7 @@ export const Profile: React.FC<ProfileProps> = ({ onSubmit, onLogout }) => {
   const submitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit({ name, email });
+    setIsButtonHidden(true);
   };
 
   return (
