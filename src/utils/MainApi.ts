@@ -1,6 +1,7 @@
 import { Movie, MovieDto } from '../types/Movie';
 import { LoginPayload, MoviePayload, SignupPayload, UpdateMePayload } from '../types/payloads';
 import { User } from '../types/User';
+import { MAIN_URL } from './config';
 
 interface SignoutDto {
   message: string;
@@ -115,6 +116,6 @@ class MainApi {
 }
 
 export const mainApi = new MainApi({
-  baseUrl: 'http://localhost:3005',
+  baseUrl: MAIN_URL,
   headers: { 'Content-Type': 'application/json' },
 });
