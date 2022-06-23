@@ -71,7 +71,7 @@ export const Movies: React.FC<MoviesProps> = ({ isSavedView }) => {
   }, [currentKeyword, allMovies, savedMovies, isSavedView]);
 
   const filterHandler = useCallback(() => {
-    const filterFlag = JSON.parse(localStorage.filter);
+    const filterFlag = localStorage.filter ? JSON.parse(localStorage.filter) : false;
     if (filterFlag) {
       setRenderMovies((current) => {
         const filtered = current.filter((movie) => movie.duration <= 40);

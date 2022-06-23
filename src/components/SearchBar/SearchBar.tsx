@@ -8,7 +8,7 @@ interface SearchBarProps {
 
 export const SearchBar: React.FC<SearchBarProps> = ({ onFilter, onSearch }) => {
   const localStorage = window.localStorage;
-  const currentFilter = JSON.parse(localStorage.filter);
+  const currentFilter = localStorage.filter ? JSON.parse(localStorage.filter) : false;
 
   const [inputValue, setInputValue] = useState(localStorage.keyword ? localStorage.keyword : '');
   const [isFilter, setIsFilter] = useState(currentFilter);
