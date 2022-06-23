@@ -1,6 +1,6 @@
 import { MovieCardProps } from './MovieCard.types';
 import './MovieCard.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MoviePayload } from '../../types/payloads';
 
 export const MovieCard: React.FC<MovieCardProps> = ({
@@ -11,13 +11,22 @@ export const MovieCard: React.FC<MovieCardProps> = ({
   onDelete,
 }) => {
   const [saved, setSaved] = useState(isSaved);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    if (isError) {
+      setTimeout(() => {
+        setIsError(false);
+      }, 5000);
+    }
+  }, [isError]);
 
   const deleteHandler = async () => {
     try {
       await onDelete(movie.id);
       setSaved(!saved);
     } catch (error) {
-      console.log(error);
+      setIsError(true);
     }
   };
 
@@ -43,7 +52,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
         await onSave(payload);
         setSaved(!saved);
       } catch (error) {
-        console.log(error);
+        setIsError(true);
       }
     } else await deleteHandler();
   };
@@ -87,6 +96,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
           onClick={saveClickHandler}
         />
       )}
+      {isError ? <span className='movie-card__error'>Что-то пошло не так... </span> : <></>}
     </li>
   );
 };

@@ -14,7 +14,8 @@ class MainApi {
   constructor(options: any) {
     this._baseUrl = options.baseUrl;
     this._headers = options.headers;
-    this._resHandler = (res) => (res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`));
+    this._resHandler = (res) =>
+      res.ok ? res.json() : Promise.reject({ status: res.status, message: res.json() });
   }
 
   _dtoToMovie = async (dto: Promise<MovieDto[]>): Promise<Movie[]> => {

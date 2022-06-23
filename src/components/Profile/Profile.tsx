@@ -19,6 +19,9 @@ export const Profile: React.FC<ProfileProps> = ({ onSubmit, onLogout }) => {
   const [isFormValid, setIsFormValid] = useState(false);
 
   const [isButtonHidden, setIsButtonHidden] = useState(true);
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  const [errorMsg, setErrorMsg] = useState('');
 
   // Effects
   useEffect(() => {
@@ -28,26 +31,39 @@ export const Profile: React.FC<ProfileProps> = ({ onSubmit, onLogout }) => {
 
   // Handlers
   const handleInputChange = (e: FormEvent<HTMLInputElement>) => {
+    setErrorMsg('');
     const form: HTMLFormElement | null = document.querySelector('.form');
-    if (form) setIsFormValid(form.reportValidity());
 
     const target = e.target as HTMLInputElement;
     if (target.name === 'email') {
       setEmail(target.value);
       setIsEmailValid(target.checkValidity());
       setEmailValidationMsg(target.validationMessage);
+      if (target.value !== currentUser.email) setIsFormValid(form!.reportValidity());
+      else setIsFormValid(false);
     }
     if (target.name === 'name') {
       setName(target.value);
       setIsNameValid(target.checkValidity());
       setNameValidationMsg(target.validationMessage);
+      if (target.value !== currentUser.name) setIsFormValid(form!.reportValidity());
+      else setIsFormValid(false);
     }
   };
 
-  const submitHandler = (e: FormEvent<HTMLFormElement>) => {
+  const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit({ name, email });
-    setIsButtonHidden(true);
+    setIsDisabled(true);
+    if (errorMsg.length) setErrorMsg('');
+    try {
+      await onSubmit({ name, email });
+      setIsButtonHidden(true);
+    } catch (error) {
+      setErrorMsg('Что-то пошло не так...');
+      setIsButtonHidden(false);
+    } finally {
+      setIsDisabled(false);
+    }
   };
 
   return (
@@ -69,6 +85,7 @@ export const Profile: React.FC<ProfileProps> = ({ onSubmit, onLogout }) => {
               maxLength={40}
               onChange={handleInputChange}
               value={name}
+              disabled={isDisabled}
             />
           </div>
 
@@ -91,6 +108,7 @@ export const Profile: React.FC<ProfileProps> = ({ onSubmit, onLogout }) => {
               required
               onChange={handleInputChange}
               value={email}
+              disabled={isDisabled}
             />
           </div>
 
@@ -99,6 +117,7 @@ export const Profile: React.FC<ProfileProps> = ({ onSubmit, onLogout }) => {
           ) : (
             <span className='form__error'>{emailValidationMsg}</span>
           )}
+          {errorMsg.length ? <span className='form__error'>{errorMsg}</span> : <></>}
         </form>
 
         <div className='profile-actions'>
@@ -110,6 +129,7 @@ export const Profile: React.FC<ProfileProps> = ({ onSubmit, onLogout }) => {
                 : 'profile-actions__button profile-actions__button_visible'
             }
             form='profile'
+            disabled={isDisabled}
           >
             Редактировать
           </button>

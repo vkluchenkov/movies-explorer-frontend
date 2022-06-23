@@ -31,27 +31,21 @@ function App() {
       try {
         const res = await mainApi.getMe();
         if (res) setCurrentUser({ ...res, isLoggedIn: true });
-      } catch (error: any) {}
+      } catch (error: any) {
+      } finally {
+        setAuthChecked(true);
+      }
     };
-    const fetch = async () => {
-      await fetchMe();
-      setAuthChecked(true);
-    };
-
-    fetch();
+    fetchMe();
   }, []);
 
   // Handlers
   const handleLogin = useCallback(
     async (payload: LoginPayload) => {
-      try {
-        const res = await mainApi.signin(payload);
-        if (res) {
-          setCurrentUser({ ...res, isLoggedIn: true });
-          navigate('/movies');
-        }
-      } catch (error: any) {
-        console.log(error);
+      const res = await mainApi.signin(payload);
+      if (res) {
+        setCurrentUser({ ...res, isLoggedIn: true });
+        navigate('/movies');
       }
     },
     [navigate]
@@ -59,41 +53,31 @@ function App() {
 
   const handleSignup = useCallback(
     async (payload: SignupPayload) => {
-      try {
-        const res = await mainApi.signup(payload);
-        if (res) {
-          setCurrentUser({ ...res, isLoggedIn: true });
-          navigate('/movies');
-        }
-      } catch (error: any) {
-        console.log(error);
+      const res = await mainApi.signup(payload);
+      if (res) {
+        setCurrentUser({ ...res, isLoggedIn: true });
+        navigate('/movies');
       }
     },
     [navigate]
   );
 
   const handleUpdateMe = useCallback(async (payload: UpdateMePayload) => {
-    try {
-      const res = await mainApi.patchMe(payload);
-      if (res) {
-        setCurrentUser((prev) => ({ ...prev, ...res }));
-      }
-    } catch (error: any) {
-      console.log(error);
+    const res = await mainApi.patchMe(payload);
+    if (res) {
+      setCurrentUser((prev) => ({ ...prev, ...res }));
     }
   }, []);
 
   const handleLogout = useCallback(async () => {
     const localStorage = window.localStorage;
     try {
-      const res = await mainApi.signout();
-      if (res) setCurrentUser({ isLoggedIn: false, email: '', name: '' });
+      setCurrentUser({ isLoggedIn: false, email: '', name: '' });
       localStorage.removeItem('keyword');
       localStorage.removeItem('filter');
+      mainApi.signout();
       navigate('/');
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }, [navigate]);
 
   if (!authchecked)
