@@ -3,7 +3,14 @@ import { MovieListProps } from './MoviesList.types';
 import './MoviesList.css';
 import { useEffect, useState } from 'react';
 
-export const MoviesList: React.FC<MovieListProps> = ({ movies, isSavedView, keyword }) => {
+export const MoviesList: React.FC<MovieListProps> = ({
+  filteredMovies,
+  savedMovies,
+  isSavedView,
+  keyword,
+  onSave,
+  onDelete,
+}) => {
   const [qty, setQty] = useState(5);
   const [moreQty, setMoreQty] = useState(2);
 
@@ -22,7 +29,7 @@ export const MoviesList: React.FC<MovieListProps> = ({ movies, isSavedView, keyw
     }
   };
 
-  const handleMore = () => setQty((current) => current + moreQty);
+  const handleLoadMore = () => setQty((current) => current + moreQty);
 
   useEffect(() => {
     handleResize();
@@ -30,25 +37,35 @@ export const MoviesList: React.FC<MovieListProps> = ({ movies, isSavedView, keyw
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const renderMovies = movies.map((movie, index) => {
-    const card = <MovieCard movie={movie} key={movie.id} isSavedView={isSavedView} />;
+  const renderMovies = filteredMovies.map((movie, index) => {
+    const isSaved = savedMovies.some((savedMovie) => savedMovie.id === movie.id);
+    const card = (
+      <MovieCard
+        isSaved={isSaved}
+        movie={movie}
+        key={movie.id}
+        isSavedView={isSavedView}
+        onSave={onSave}
+        onDelete={onDelete}
+      />
+    );
     if (!isSavedView) return index < qty ? card : null;
     return card;
   });
 
   const message = (
     <p className='movie-list__message'>
-      {movies.length
-        ? 'По запросу « <strong>{keyword}</strong> » ничего не найдено :('
-        : 'Фильмы отсутствуют'}
+      {keyword
+        ? `По запросу « ${keyword} » ничего не найдено :(`
+        : 'У вас еще нету сохраненных фильмов'}
     </p>
   );
 
   return (
     <section className='movie-list'>
-      {movies.length ? <ul className='movie-list__cards'>{renderMovies}</ul> : message}
-      {movies.length <= qty || isSavedView ? null : (
-        <button type='button' className='movie-list__more-btn' onClick={handleMore}>
+      {filteredMovies.length ? <ul className='movie-list__cards'>{renderMovies}</ul> : message}
+      {filteredMovies.length <= qty || isSavedView ? null : (
+        <button type='button' className='movie-list__more-btn' onClick={handleLoadMore}>
           Ещё
         </button>
       )}

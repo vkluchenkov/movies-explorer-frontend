@@ -20,6 +20,7 @@ class MainApi {
   _dtoToMovie = async (dto: Promise<MovieDto[]>): Promise<Movie[]> => {
     const res = await dto;
     return res.map((m) => {
+      const imageUrl = m.image.replace('https://api.nomoreparties.co/', '');
       return {
         id: m.movieId,
         nameRU: m.nameRU,
@@ -31,7 +32,7 @@ class MainApi {
         description: m.description,
         trailerLink: m.trailerLink,
         image: {
-          url: m.image,
+          url: imageUrl,
         },
       };
     });

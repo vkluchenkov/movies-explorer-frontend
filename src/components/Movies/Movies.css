@@ -9,6 +9,7 @@
 .movies__preloader-container {
   max-width: 250px;
   padding: 50px 0 0;
+  margin: 0 auto;
 }
 
 @media screen and (min-width: 768px) {

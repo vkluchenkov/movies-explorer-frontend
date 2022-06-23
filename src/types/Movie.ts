@@ -50,7 +50,9 @@ export interface Movie {
   updated_at?: string;
   image: MovieImage;
 }
+
 export interface MovieDto {
+  _id: string;
   movieId: number;
   nameRU: string;
   nameEN: string;

@@ -9,6 +9,7 @@ import { Movie } from '../../types/Movie';
 import { mainApi } from '../../utils/MainApi';
 import { moviesApi } from '../../utils/MoviesApi';
 import Preloader from '../Preloader/Preloader';
+import { MoviePayload } from '../../types/payloads';
 
 export const Movies: React.FC<MoviesProps> = ({ isSavedView }) => {
   const localStorage = window.localStorage;
@@ -16,35 +17,58 @@ export const Movies: React.FC<MoviesProps> = ({ isSavedView }) => {
   const [currentKeyword, setCurrentKeyword] = useState(
     localStorage.keyword ? localStorage.keyword : ''
   );
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [allMovies, setAllMovies] = useState<Movie[]>([]);
+  const [savedMovies, setSavedMovies] = useState<Movie[]>([]);
   const [showLoader, setShowLoader] = useState(false);
-  const [renderMovies, setRenderMovies] = useState(movies);
+  const [renderMovies, setRenderMovies] = useState(allMovies);
 
   const getMovies = useCallback(async () => {
     setShowLoader(true);
-    if (isSavedView) {
-      try {
-        const res = await mainApi.getMovies();
-        if (res) setMovies(res);
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      try {
-        const res = await moviesApi.getMovies();
-        if (res) setMovies(res);
-      } catch (error) {
-        console.log(error);
-      }
+    try {
+      const saved = await mainApi.getMovies();
+      const all = await moviesApi.getMovies();
+      if (all) setAllMovies(all);
+      if (saved) setSavedMovies(saved);
+    } catch (error) {
+      console.log(error);
     }
     setShowLoader(false);
-  }, [isSavedView]);
+  }, []);
 
-  const searchResult = useMemo(
-    () =>
-      movies.filter((movie) => movie.nameRU.toLowerCase().includes(currentKeyword.toLowerCase())),
-    [currentKeyword, movies]
+  const saveMovieHandler = useCallback(
+    async (movie: MoviePayload) => {
+      const res = await mainApi.addMovie(movie);
+      if (res)
+        setSavedMovies((current) => {
+          const newMovie = allMovies.find((m) => m.id === movie.movieId);
+          const arr = current.slice();
+          if (newMovie) {
+            arr.push(newMovie);
+            return arr;
+          }
+          return current;
+        });
+    },
+    [allMovies]
   );
+
+  const deleteMovieHandler = useCallback(async (movieId: number) => {
+    const res = await mainApi.deleteMovie(movieId);
+    if (res) setSavedMovies((current) => current.filter((m) => m.id !== movieId));
+  }, []);
+
+  const searchResult = useMemo(() => {
+    if (!isSavedView && allMovies.length)
+      return allMovies.filter((movie) =>
+        movie.nameRU.toLowerCase().includes(currentKeyword.toLowerCase())
+      );
+    if (!isSavedView) return [];
+    if (savedMovies.length)
+      return savedMovies.filter((movie) =>
+        movie.nameRU.toLowerCase().includes(currentKeyword.toLowerCase())
+      );
+    return [];
+  }, [currentKeyword, allMovies, savedMovies, isSavedView]);
 
   const filterHandler = useCallback(() => {
     const filterFlag = JSON.parse(localStorage.filter);
@@ -74,13 +98,26 @@ export const Movies: React.FC<MoviesProps> = ({ isSavedView }) => {
     <>
       <Header />
       <main className='movies'>
-        <SearchBar onFilter={filterHandler} onSearch={searchHandler} />
         {showLoader ? (
           <div className='movies__preloader-container'>
             <Preloader />
           </div>
         ) : (
-          <MoviesList movies={renderMovies} isSavedView={isSavedView} keyword={currentKeyword} />
+          <>
+            {allMovies.length ? (
+              <SearchBar onFilter={filterHandler} onSearch={searchHandler} />
+            ) : (
+              <></>
+            )}
+            <MoviesList
+              filteredMovies={renderMovies}
+              savedMovies={savedMovies}
+              isSavedView={isSavedView}
+              keyword={currentKeyword}
+              onSave={saveMovieHandler}
+              onDelete={deleteMovieHandler}
+            />
+          </>
         )}
       </main>
       <Footer />
