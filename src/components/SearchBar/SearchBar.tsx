@@ -2,7 +2,7 @@ import { FormEvent, useState } from 'react';
 import './SearchBar.css';
 
 interface SearchBarProps {
-  onFilter: () => void;
+  onFilter: (filterFlag: boolean) => void;
   onSearch: (keyword: string) => void;
   isSavedView: boolean | undefined;
 }
@@ -36,8 +36,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onFilter, onSearch, isSave
 
   const handleSwitch = () => {
     if (!isSavedView) localStorage.setItem('filter', JSON.stringify(!isFilter));
+    else localStorage.setItem('savedFilter', JSON.stringify(!isFilter));
+    onFilter(!isFilter);
     setIsFilter(!isFilter);
-    onFilter();
   };
 
   return (

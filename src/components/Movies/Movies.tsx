@@ -69,18 +69,17 @@ export const Movies: React.FC<MoviesProps> = ({ isSavedView }) => {
     return [];
   }, [currentKeyword, allMovies, savedMovies, isSavedView]);
 
-  const filterHandler = useCallback(() => {
-    const filterFlag = () => {
-      if (!isSavedView) return localStorage.filter ? JSON.parse(localStorage.filter) : false;
-      return false;
-    };
-    if (filterFlag()) {
-      setRenderMovies((current) => {
-        const filtered = current.filter((movie) => movie.duration <= SHORTIE_DURATION);
-        return filtered;
-      });
-    } else setRenderMovies(searchResult);
-  }, [searchResult, localStorage.filter, isSavedView]);
+  const filterHandler = useCallback(
+    (filterFlag: boolean) => {
+      if (filterFlag) {
+        setRenderMovies((current) => {
+          const filtered = current.filter((movie) => movie.duration <= SHORTIE_DURATION);
+          return filtered;
+        });
+      } else setRenderMovies(searchResult);
+    },
+    [searchResult]
+  );
 
   const searchHandler = useCallback(
     (keyword: string) => {
@@ -98,8 +97,12 @@ export const Movies: React.FC<MoviesProps> = ({ isSavedView }) => {
   }, [isSavedView, localStorage.keyword]);
 
   useEffect(() => {
-    filterHandler();
-  }, [localStorage.filter, filterHandler]);
+    const filterFlag = () => {
+      if (!isSavedView) return localStorage.filter ? JSON.parse(localStorage.filter) : false;
+      return localStorage.savedFilter ? JSON.parse(localStorage.savedFilter) : false;
+    };
+    filterHandler(filterFlag());
+  }, [localStorage.filter, localStorage.savedFilter, filterHandler, isSavedView]);
 
   useEffect(() => {
     const fetchMovies = async () => getMovies();

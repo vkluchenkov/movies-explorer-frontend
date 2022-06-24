@@ -75,9 +75,7 @@ export const MoviesList: React.FC<MovieListProps> = ({
 
   const message = (
     <p className='movie-list__message'>
-      {keyword
-        ? `По запросу « ${keyword} » ничего не найдено :(`
-        : 'У вас еще нету сохраненных фильмов'}
+      {keyword ? `По запросу « ${keyword} » ничего не найдено :(` : 'Список фильмов пуст...'}
     </p>
   );
 
