@@ -14,13 +14,11 @@ import { MoviePayload } from '../../types/payloads';
 export const Movies: React.FC<MoviesProps> = ({ isSavedView }) => {
   const localStorage = window.localStorage;
 
-  const [currentKeyword, setCurrentKeyword] = useState(
-    localStorage.keyword ? localStorage.keyword : ''
-  );
+  const [currentKeyword, setCurrentKeyword] = useState('');
   const [allMovies, setAllMovies] = useState<Movie[]>([]);
   const [savedMovies, setSavedMovies] = useState<Movie[]>([]);
   const [showLoader, setShowLoader] = useState(false);
-  const [renderMovies, setRenderMovies] = useState(allMovies);
+  const [renderMovies, setRenderMovies] = useState(isSavedView ? savedMovies : allMovies);
 
   const getMovies = useCallback(async () => {
     setShowLoader(true);
@@ -71,19 +69,32 @@ export const Movies: React.FC<MoviesProps> = ({ isSavedView }) => {
   }, [currentKeyword, allMovies, savedMovies, isSavedView]);
 
   const filterHandler = useCallback(() => {
-    const filterFlag = localStorage.filter ? JSON.parse(localStorage.filter) : false;
-    if (filterFlag) {
+    const filterFlag = () => {
+      if (!isSavedView) return localStorage.filter ? JSON.parse(localStorage.filter) : false;
+      return false;
+    };
+    if (filterFlag()) {
       setRenderMovies((current) => {
         const filtered = current.filter((movie) => movie.duration <= 40);
         return filtered;
       });
     } else setRenderMovies(searchResult);
-  }, [searchResult, localStorage.filter]);
+  }, [searchResult, localStorage.filter, isSavedView]);
 
-  const searchHandler = useCallback((keyword: string) => setCurrentKeyword(keyword), []);
+  const searchHandler = useCallback(
+    (keyword: string) => {
+      setCurrentKeyword(keyword);
+      if (!isSavedView) localStorage.setItem('keyword', keyword);
+    },
+    [isSavedView, localStorage]
+  );
 
   useEffect(() => setRenderMovies(searchResult), [searchResult]);
-  useEffect(() => localStorage.setItem('keyword', currentKeyword), [currentKeyword, localStorage]);
+
+  useEffect(() => {
+    if (!isSavedView) setCurrentKeyword(localStorage.keyword ? localStorage.keyword : '');
+    else setCurrentKeyword('');
+  }, [isSavedView, localStorage.keyword]);
 
   useEffect(() => {
     filterHandler();
@@ -105,7 +116,11 @@ export const Movies: React.FC<MoviesProps> = ({ isSavedView }) => {
         ) : (
           <>
             {allMovies.length ? (
-              <SearchBar onFilter={filterHandler} onSearch={searchHandler} />
+              <SearchBar
+                onFilter={filterHandler}
+                onSearch={searchHandler}
+                isSavedView={isSavedView}
+              />
             ) : (
               <></>
             )}

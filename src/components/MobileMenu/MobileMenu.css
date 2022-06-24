@@ -11,6 +11,7 @@
 .mobile-menu_open {
   display: flex;
   justify-content: flex-end;
+  z-index: 99;
 }
 
 .mobile-menu__items {

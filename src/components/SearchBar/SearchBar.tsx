@@ -4,14 +4,22 @@ import './SearchBar.css';
 interface SearchBarProps {
   onFilter: () => void;
   onSearch: (keyword: string) => void;
+  isSavedView: boolean | undefined;
 }
 
-export const SearchBar: React.FC<SearchBarProps> = ({ onFilter, onSearch }) => {
+export const SearchBar: React.FC<SearchBarProps> = ({ onFilter, onSearch, isSavedView }) => {
   const localStorage = window.localStorage;
-  const currentFilter = localStorage.filter ? JSON.parse(localStorage.filter) : false;
 
-  const [inputValue, setInputValue] = useState(localStorage.keyword ? localStorage.keyword : '');
-  const [isFilter, setIsFilter] = useState(currentFilter);
+  const [inputValue, setInputValue] = useState(() => {
+    if (!isSavedView) return localStorage.keyword ? localStorage.keyword : '';
+    return '';
+  });
+
+  const [isFilter, setIsFilter] = useState(() => {
+    if (!isSavedView) return localStorage.filter ? JSON.parse(localStorage.filter) : false;
+    return false;
+  });
+
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const formSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
@@ -27,7 +35,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onFilter, onSearch }) => {
   };
 
   const handleSwitch = () => {
-    localStorage.setItem('filter', JSON.stringify(!isFilter));
+    if (!isSavedView) localStorage.setItem('filter', JSON.stringify(!isFilter));
     setIsFilter(!isFilter);
     onFilter();
   };

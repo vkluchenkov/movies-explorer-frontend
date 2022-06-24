@@ -73,8 +73,7 @@ function App() {
     const localStorage = window.localStorage;
     try {
       setCurrentUser({ isLoggedIn: false, email: '', name: '' });
-      localStorage.removeItem('keyword');
-      localStorage.removeItem('filter');
+      localStorage.clear();
       mainApi.signout();
       navigate('/');
     } catch (error) {}
