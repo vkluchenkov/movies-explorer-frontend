@@ -2,6 +2,18 @@ import { MovieCard } from '../MovieCard/MovieCard';
 import { MovieListProps } from './MoviesList.types';
 import './MoviesList.css';
 import { useEffect, useState } from 'react';
+import {
+  CARDS_IN_ROW_LARGE,
+  CARDS_IN_ROW_MEDIUM,
+  INITIAL_CARDS_LARGE,
+  INITIAL_CARDS_MEDIUM,
+  INITIAL_CARDS_SMALL,
+  MORE_QTY_LARGE,
+  MORE_QTY_MEDIUM,
+  MORE_QTY_SMALL,
+  WINDOW_SIZE_LARGE,
+  WINDOW_SIZE_MEDIUM,
+} from '../../utils/config';
 
 export const MoviesList: React.FC<MovieListProps> = ({
   filteredMovies,
@@ -11,21 +23,29 @@ export const MoviesList: React.FC<MovieListProps> = ({
   onSave,
   onDelete,
 }) => {
-  const [qty, setQty] = useState(5);
-  const [moreQty, setMoreQty] = useState(2);
+  const [qty, setQty] = useState(INITIAL_CARDS_SMALL);
+  const [moreQty, setMoreQty] = useState(MORE_QTY_SMALL);
 
   const handleResize = () => {
-    if (window.innerWidth < 600) {
+    if (window.innerWidth < WINDOW_SIZE_MEDIUM) {
       setQty((current) => current);
-      setMoreQty(2);
+      setMoreQty(INITIAL_CARDS_SMALL);
     }
-    if (window.innerWidth >= 600 && window.innerWidth < 1024) {
-      setQty((current) => (current <= 8 ? 8 : Math.floor(current / 2) * 2));
-      setMoreQty(4);
+    if (window.innerWidth >= WINDOW_SIZE_MEDIUM && window.innerWidth < WINDOW_SIZE_LARGE) {
+      setQty((current) =>
+        current <= INITIAL_CARDS_MEDIUM
+          ? INITIAL_CARDS_MEDIUM
+          : Math.floor(current / CARDS_IN_ROW_MEDIUM) * CARDS_IN_ROW_MEDIUM
+      );
+      setMoreQty(MORE_QTY_MEDIUM);
     }
-    if (window.innerWidth >= 1024) {
-      setQty((current) => (current <= 12 ? 12 : Math.floor(current / 3) * 3));
-      setMoreQty(6);
+    if (window.innerWidth >= WINDOW_SIZE_LARGE) {
+      setQty((current) =>
+        current <= INITIAL_CARDS_LARGE
+          ? INITIAL_CARDS_LARGE
+          : Math.floor(current / CARDS_IN_ROW_LARGE) * CARDS_IN_ROW_LARGE
+      );
+      setMoreQty(MORE_QTY_LARGE);
     }
   };
 

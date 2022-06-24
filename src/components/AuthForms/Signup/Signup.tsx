@@ -1,10 +1,13 @@
-import { FormEvent, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { FormEvent, useContext, useEffect, useState } from 'react';
+import { Link, Navigate } from 'react-router-dom';
+import { CurrentUserContext } from '../../../contexts/CurrentUserContext';
 import { ReactComponent as Logo } from '../../../images/logo.svg';
 import '../AuthForms.css';
 import { SignupProps } from './Signup.types';
 
 export const Signup: React.FC<SignupProps> = ({ onSignup }) => {
+  const currentUser = useContext(CurrentUserContext);
+
   const [name, setName] = useState('');
   const [isNameValid, setIsNameValid] = useState(false);
   const [nameValidationMsg, setNameValidationMsg] = useState('');
@@ -59,6 +62,8 @@ export const Signup: React.FC<SignupProps> = ({ onSignup }) => {
       setIsFormDisabled(false);
     }
   };
+
+  if (currentUser.isLoggedIn) return <Navigate to='/' />;
 
   return (
     <section className='auth'>

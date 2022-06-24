@@ -10,6 +10,7 @@ import { mainApi } from '../../utils/MainApi';
 import { moviesApi } from '../../utils/MoviesApi';
 import Preloader from '../Preloader/Preloader';
 import { MoviePayload } from '../../types/payloads';
+import { SHORTIE_DURATION } from '../../utils/config';
 
 export const Movies: React.FC<MoviesProps> = ({ isSavedView }) => {
   const localStorage = window.localStorage;
@@ -75,7 +76,7 @@ export const Movies: React.FC<MoviesProps> = ({ isSavedView }) => {
     };
     if (filterFlag()) {
       setRenderMovies((current) => {
-        const filtered = current.filter((movie) => movie.duration <= 40);
+        const filtered = current.filter((movie) => movie.duration <= SHORTIE_DURATION);
         return filtered;
       });
     } else setRenderMovies(searchResult);

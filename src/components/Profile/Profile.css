@@ -118,6 +118,19 @@
   cursor: not-allowed;
 }
 
+.profile-actions__success {
+  color: #3ddc84;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 15px 0 45px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.profile-actions__success_visible {
+  opacity: 1;
+}
+
 @media screen and (min-width: 768px) {
   .profile {
     min-height: calc(100vh - 79px);

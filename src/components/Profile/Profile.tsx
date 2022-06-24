@@ -22,6 +22,7 @@ export const Profile: React.FC<ProfileProps> = ({ onSubmit, onLogout }) => {
   const [isDisabled, setIsDisabled] = useState(false);
 
   const [errorMsg, setErrorMsg] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
 
   // Effects
   useEffect(() => {
@@ -58,13 +59,23 @@ export const Profile: React.FC<ProfileProps> = ({ onSubmit, onLogout }) => {
     try {
       await onSubmit({ name, email });
       setIsButtonHidden(true);
+      setIsSuccess(true);
     } catch (error) {
       setErrorMsg('Что-то пошло не так...');
       setIsButtonHidden(false);
+      setIsSuccess(false);
     } finally {
       setIsDisabled(false);
     }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setTimeout(() => {
+        setIsSuccess(false);
+      }, 5000);
+    }
+  }, [isSuccess]);
 
   return (
     <>
@@ -121,6 +132,15 @@ export const Profile: React.FC<ProfileProps> = ({ onSubmit, onLogout }) => {
         </form>
 
         <div className='profile-actions'>
+          <p
+            className={
+              isSuccess
+                ? 'profile-actions__success profile-actions__success_visible'
+                : 'profile-actions__success'
+            }
+          >
+            Данные сохранены!
+          </p>
           <button
             type='submit'
             className={

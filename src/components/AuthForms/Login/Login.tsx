@@ -52,7 +52,9 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
       setIsFormDisabled(false);
     }
   };
+
   if (currentUser.isLoggedIn) return <Navigate to='/' />;
+
   return (
     <section className='auth'>
       <Link to='/' className='auth__logo'>

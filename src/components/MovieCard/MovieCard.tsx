@@ -1,6 +1,6 @@
 import { MovieCardProps } from './MovieCard.types';
 import './MovieCard.css';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MoviePayload } from '../../types/payloads';
 
 export const MovieCard: React.FC<MovieCardProps> = ({
@@ -57,6 +57,15 @@ export const MovieCard: React.FC<MovieCardProps> = ({
     } else await deleteHandler();
   };
 
+  const cardClickHandler = (e: React.MouseEvent<HTMLElement>) => {
+    const target = e.target as HTMLElement;
+    const url = movie.trailerLink
+      ? movie.trailerLink
+      : `https://yandex.ru/search/?text=${movie.nameRU}`;
+
+    if (!target.classList.contains('movie-card__button')) window.open(url, '_blank')!.focus();
+  };
+
   const duration = () => {
     if (movie.duration <= 59) {
       return movie.duration + ' м';
@@ -69,7 +78,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
   };
 
   return (
-    <li className='movie-card'>
+    <li className='movie-card' onClick={cardClickHandler}>
       <img
         className='movie-card__image'
         alt={movie.nameRU}
