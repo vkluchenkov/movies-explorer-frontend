@@ -5,5 +5,5 @@ import { GuardedRouteProps } from './GuarderRoute.types';
 
 export const GuardedRoute: React.FC<GuardedRouteProps> = ({ children }) => {
   const currentUser = useContext(CurrentUserContext);
-  return currentUser?.isLoggedIn ? children : <Navigate to='/signin' />;
+  return currentUser?.isLoggedIn ? children : <Navigate to='/' />;
 };

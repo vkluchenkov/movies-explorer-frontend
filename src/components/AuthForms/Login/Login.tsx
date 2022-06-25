@@ -1,10 +1,13 @@
-import { FormEvent, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { FormEvent, useContext, useEffect, useState } from 'react';
+import { Link, Navigate } from 'react-router-dom';
+import { CurrentUserContext } from '../../../contexts/CurrentUserContext';
 import { ReactComponent as Logo } from '../../../images/logo.svg';
 import '../AuthForms.css';
 import { LoginProps } from './Login.types';
 
 export const Login: React.FC<LoginProps> = ({ onLogin }) => {
+  const currentUser = useContext(CurrentUserContext);
+
   const [email, setEmail] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [emailValidationMsg, setEmailValidationMsg] = useState('');
@@ -12,6 +15,8 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [passwordValidationMsg, setPasswordValidationMsg] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
+  const [errorMsg, setIsErrorMsg] = useState('');
 
   useEffect(() => {
     if (isEmailValid && isPasswordValid) setIsButtonDisabled(false);
@@ -19,6 +24,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
   }, [isEmailValid, isPasswordValid]);
 
   const handleChange = (e: FormEvent<HTMLInputElement>) => {
+    setIsErrorMsg('');
     const target = e.target as HTMLInputElement;
     if (target.name === 'email') {
       setEmail(target.value);
@@ -32,10 +38,22 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
     }
   };
 
-  const submitHandler = (e: FormEvent<HTMLFormElement>) => {
+  const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
+    if (errorMsg.length) setIsErrorMsg('');
+    setIsFormDisabled(true);
+    setIsButtonDisabled(true);
     e.preventDefault();
-    onLogin({ email, password });
+    try {
+      await onLogin({ email, password });
+    } catch (error) {
+      setIsErrorMsg('Что-то пошло не так...');
+    } finally {
+      setIsButtonDisabled(false);
+      setIsFormDisabled(false);
+    }
   };
+
+  if (currentUser.isLoggedIn) return <Navigate to='/' />;
 
   return (
     <section className='auth'>
@@ -57,6 +75,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
           maxLength={40}
           onChange={handleChange}
           value={email || ''}
+          disabled={isFormDisabled}
         />
         {isEmailValid ?? !emailValidationMsg.length ? (
           <></>
@@ -73,12 +92,12 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
           required
           onChange={handleChange}
           value={password || ''}
+          disabled={isFormDisabled}
         />
-        {isPasswordValid ?? !passwordValidationMsg.length ? (
-          <></>
-        ) : (
-          <span className='authform__error'>{passwordValidationMsg}</span>
-        )}
+
+        <span className='authform__error'>
+          {errorMsg.length ? errorMsg : passwordValidationMsg}
+        </span>
       </form>
 
       <div className='auth__actions'>

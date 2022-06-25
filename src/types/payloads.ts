@@ -8,7 +8,21 @@ export interface SignupPayload {
   password: string;
 }
 
-export interface UpdatePayload {
+export interface UpdateMePayload {
   name: string;
   email: string;
+}
+
+export interface MoviePayload {
+  country: string;
+  director: string;
+  duration: number;
+  year: string;
+  description: string;
+  image: string;
+  trailerLink: string;
+  thumbnail: string;
+  movieId: number;
+  nameRU: string;
+  nameEN: string;
 }

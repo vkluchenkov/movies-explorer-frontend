@@ -1,18 +1,45 @@
 import { FormEvent, useState } from 'react';
 import './SearchBar.css';
 
-export const SearchBar: React.FC = () => {
-  const [inputValue, setInputValue] = useState('');
-  const [isFilter, setIsFilter] = useState(false);
+interface SearchBarProps {
+  onFilter: (filterFlag: boolean) => void;
+  onSearch: (keyword: string) => void;
+  isSavedView: boolean | undefined;
+}
 
-  const formSubmitHandler = () => {};
+export const SearchBar: React.FC<SearchBarProps> = ({ onFilter, onSearch, isSavedView }) => {
+  const localStorage = window.localStorage;
+
+  const [inputValue, setInputValue] = useState(() => {
+    if (!isSavedView) return localStorage.keyword ? localStorage.keyword : '';
+    return '';
+  });
+
+  const [isFilter, setIsFilter] = useState(() => {
+    if (!isSavedView) return localStorage.filter ? JSON.parse(localStorage.filter) : false;
+    return false;
+  });
+
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  const formSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSearch(inputValue);
+  };
 
   const handleInput = (e: FormEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     setInputValue(target.value);
+    if (target.checkValidity()) setIsButtonDisabled(false);
+    else setIsButtonDisabled(true);
   };
 
-  const handleSwitch = () => setIsFilter(!isFilter);
+  const handleSwitch = () => {
+    if (!isSavedView) localStorage.setItem('filter', JSON.stringify(!isFilter));
+    else localStorage.setItem('savedFilter', JSON.stringify(!isFilter));
+    onFilter(!isFilter);
+    setIsFilter(!isFilter);
+  };
 
   return (
     <section className='search'>
@@ -25,7 +52,7 @@ export const SearchBar: React.FC = () => {
           onChange={handleInput}
           placeholder='Фильм'
         />
-        <button type='submit' className='search__button'>
+        <button type='submit' className='search__button' disabled={isButtonDisabled}>
           Найти
         </button>
       </form>

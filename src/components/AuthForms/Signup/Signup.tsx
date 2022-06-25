@@ -1,14 +1,13 @@
-import { FormEvent, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { SignupPayload } from '../../../types/payloads';
+import { FormEvent, useContext, useEffect, useState } from 'react';
+import { Link, Navigate } from 'react-router-dom';
+import { CurrentUserContext } from '../../../contexts/CurrentUserContext';
 import { ReactComponent as Logo } from '../../../images/logo.svg';
 import '../AuthForms.css';
-
-interface SignupProps {
-  onSignup: (payload: SignupPayload) => void;
-}
+import { SignupProps } from './Signup.types';
 
 export const Signup: React.FC<SignupProps> = ({ onSignup }) => {
+  const currentUser = useContext(CurrentUserContext);
+
   const [name, setName] = useState('');
   const [isNameValid, setIsNameValid] = useState(false);
   const [nameValidationMsg, setNameValidationMsg] = useState('');
@@ -19,6 +18,8 @@ export const Signup: React.FC<SignupProps> = ({ onSignup }) => {
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [passwordValidationMsg, setPasswordValidationMsg] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
+  const [errorMsg, setIsErrorMsg] = useState('');
 
   useEffect(() => {
     if (isEmailValid && isPasswordValid && isNameValid) setIsButtonDisabled(false);
@@ -26,6 +27,7 @@ export const Signup: React.FC<SignupProps> = ({ onSignup }) => {
   }, [isEmailValid, isPasswordValid, isNameValid]);
 
   const handleChange = (e: FormEvent<HTMLInputElement>) => {
+    setIsErrorMsg('');
     const target = e.target as HTMLInputElement;
     if (target.name === 'name') {
       setName(target.value);
@@ -44,10 +46,24 @@ export const Signup: React.FC<SignupProps> = ({ onSignup }) => {
     }
   };
 
-  const submitHandler = (e: FormEvent<HTMLFormElement>) => {
+  const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
+    if (errorMsg.length) setIsErrorMsg('');
+    setIsFormDisabled(true);
+    setIsButtonDisabled(true);
     e.preventDefault();
-    onSignup({ name, email, password });
+
+    try {
+      await onSignup({ name, email, password });
+    } catch (error: any) {
+      if (error.status === 409) setIsErrorMsg('Пользователь с таким email уже существует');
+      else setIsErrorMsg('Что-то пошло не так...');
+    } finally {
+      setIsButtonDisabled(false);
+      setIsFormDisabled(false);
+    }
   };
+
+  if (currentUser.isLoggedIn) return <Navigate to='/' />;
 
   return (
     <section className='auth'>
@@ -69,6 +85,7 @@ export const Signup: React.FC<SignupProps> = ({ onSignup }) => {
           maxLength={40}
           onChange={handleChange}
           value={name || ''}
+          disabled={isFormDisabled}
         />
         {isNameValid ?? !nameValidationMsg.length ? (
           <></>
@@ -88,6 +105,7 @@ export const Signup: React.FC<SignupProps> = ({ onSignup }) => {
           maxLength={40}
           onChange={handleChange}
           value={email || ''}
+          disabled={isFormDisabled}
         />
         {isEmailValid ?? !emailValidationMsg.length ? (
           <></>
@@ -104,12 +122,11 @@ export const Signup: React.FC<SignupProps> = ({ onSignup }) => {
           required
           onChange={handleChange}
           value={password || ''}
+          disabled={isFormDisabled}
         />
-        {isPasswordValid ?? !passwordValidationMsg.length ? (
-          <></>
-        ) : (
-          <span className='authform__error'>{passwordValidationMsg}</span>
-        )}
+        <span className='authform__error'>
+          {errorMsg.length ? errorMsg : passwordValidationMsg}
+        </span>
       </form>
       <div className='auth__actions'>
         <button

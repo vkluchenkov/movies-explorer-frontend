@@ -1,6 +1,6 @@
-import { UpdatePayload } from '../../types/payloads';
+import { UpdateMePayload } from '../../types/payloads';
 
 export interface ProfileProps {
-  onSubmit: (payload: UpdatePayload) => void;
-  onLogout: () => void;
+  onSubmit: (payload: UpdateMePayload) => Promise<void>;
+  onLogout: () => Promise<void>;
 }
